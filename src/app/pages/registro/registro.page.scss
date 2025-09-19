@@ -1,0 +1,29 @@
+.invalid {
+  border-bottom: 2px solid var(--ion-color-danger);
+}
+
+.separator {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 20px 0;
+
+  &::before,
+  &::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid var(--ion-color-medium);
+  }
+
+  span {
+    padding: 0 10px;
+    color: var(--ion-color-medium);
+  }
+}
+
+ion-note {
+  display: block;
+  margin-top: 5px;
+  margin-bottom: 15px;
+  font-size: 14px;
+}

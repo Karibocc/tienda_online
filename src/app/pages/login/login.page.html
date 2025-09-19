@@ -1,0 +1,39 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Login</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-item>
+    <ion-label position="floating">Correo</ion-label>
+    <ion-input [(ngModel)]="email" type="email"></ion-input>
+  </ion-item>
+
+  <ion-item>
+    <ion-label position="floating">Contraseña</ion-label>
+    <ion-input [(ngModel)]="password" type="password"></ion-input>
+  </ion-item>
+
+  <ion-button expand="full" class="ion-margin-top" (click)="iniciarSesion()">
+    Iniciar Sesión
+  </ion-button>
+
+  <ion-button expand="full" color="danger" class="ion-margin-top" (click)="loginConGoogle()">
+    Iniciar con Google
+  </ion-button>
+
+  <ion-button expand="full" fill="clear" class="ion-margin-top" (click)="olvidarContrasena()">
+    ¿Olvidaste tu contraseña?
+  </ion-button>
+
+  <ion-button expand="full" fill="clear" class="ion-margin-top" (click)="registrar()">
+    Registrar nuevo usuario
+  </ion-button>
+</ion-content>
+
+
+
+
+
+

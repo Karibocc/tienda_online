@@ -1,0 +1,107 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Registro</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <!-- Logo o imagen de registro -->
+  <div class="ion-text-center ion-margin-bottom">
+    <ion-icon name="person-add" size="large" color="primary"></ion-icon>
+    <h2>Crea tu cuenta</h2>
+    <p>Completa tus datos para registrarte</p>
+  </div>
+
+  <!-- Campo Nombre -->
+  <ion-item>
+    <ion-label position="floating">Nombre</ion-label>
+    <ion-input
+      type="text"
+      [(ngModel)]="nombre"
+      required
+      #nombreInput="ngModel"
+      [class.invalid]="nombreInput.invalid && nombreInput.touched">
+    </ion-input>
+  </ion-item>
+  <ion-note *ngIf="nombreInput.invalid && nombreInput.touched" color="danger">
+    El nombre es requerido
+  </ion-note>
+
+  <!-- Campo Apellido -->
+  <ion-item>
+    <ion-label position="floating">Apellido</ion-label>
+    <ion-input
+      type="text"
+      [(ngModel)]="apellido"
+      required
+      #apellidoInput="ngModel"
+      [class.invalid]="apellidoInput.invalid && apellidoInput.touched">
+    </ion-input>
+  </ion-item>
+  <ion-note *ngIf="apellidoInput.invalid && apellidoInput.touched" color="danger">
+    El apellido es requerido
+  </ion-note>
+
+  <!-- Campo Correo -->
+  <ion-item>
+    <ion-label position="floating">Correo electrónico</ion-label>
+    <ion-input
+      type="email"
+      [(ngModel)]="correo"
+      required
+      pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}"
+      #correoInput="ngModel"
+      [class.invalid]="correoInput.invalid && correoInput.touched">
+    </ion-input>
+  </ion-item>
+  <ion-note *ngIf="correoInput.errors?.['required'] && correoInput.touched" color="danger">
+    El correo electrónico es requerido
+  </ion-note>
+  <ion-note *ngIf="correoInput.errors?.['pattern'] && correoInput.touched" color="danger">
+    Por favor ingresa un correo electrónico válido
+  </ion-note>
+
+  <!-- Campo Contraseña -->
+  <ion-item>
+    <ion-label position="floating">Contraseña</ion-label>
+    <ion-input
+      type="password"
+      [(ngModel)]="contrasena"
+      required
+      minlength="6"
+      #contrasenaInput="ngModel"
+      [class.invalid]="contrasenaInput.invalid && contrasenaInput.touched">
+    </ion-input>
+  </ion-item>
+  <ion-note *ngIf="contrasenaInput.errors?.['required'] && contrasenaInput.touched" color="danger">
+    La contraseña es requerida
+  </ion-note>
+  <ion-note *ngIf="contrasenaInput.errors?.['minlength'] && contrasenaInput.touched" color="danger">
+    La contraseña debe tener al menos 6 caracteres
+  </ion-note>
+
+  <!-- Botón Registrar -->
+  <ion-button
+    expand="full"
+    (click)="registrarUsuario()"
+    [disabled]="!nombre || !apellido || !correo || !contrasena || contrasena.length < 6"
+    class="ion-margin-top">
+    Registrarme
+  </ion-button>
+
+  <!-- Separador -->
+  <div class="separator">
+    <span>o</span>
+  </div>
+
+  <!-- Botón Volver al Login -->
+  <ion-button expand="full" fill="clear" color="medium" (click)="volverLogin()">
+    ¿Ya tienes cuenta? Inicia sesión
+  </ion-button>
+
+  <!-- Información adicional -->
+  <ion-note class="ion-text-center ion-margin-top" color="medium">
+    <p>Al registrarte, aceptas nuestros Términos de servicio y Política de privacidad</p>
+  </ion-note>
+</ion-content>
+
