@@ -1,0 +1,43 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Carrito</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content *ngIf="productos.length > 0; else vacio">
+  <ion-list>
+    <ion-item *ngFor="let producto of productos">
+      <ion-thumbnail slot="start">
+        <ion-img [src]="producto.imagen"></ion-img>
+      </ion-thumbnail>
+      <ion-label>
+        <h2>{{ producto.nombre }}</h2>
+        <p>Precio: ${{ producto.precio | number }}</p>
+        <p>Cantidad: {{ producto.cantidad }}</p>
+        <p>Subtotal: ${{ (producto.precio * (producto.cantidad ?? 1)) | number }}</p>
+      </ion-label>
+      <ion-button fill="outline" color="primary" (click)="aumentarCantidad(producto)">+</ion-button>
+      <ion-button fill="outline" color="danger" (click)="disminuirCantidad(producto)">-</ion-button>
+      <ion-button fill="clear" color="medium" (click)="eliminarProducto(producto)">🗑️</ion-button>
+    </ion-item>
+  </ion-list>
+
+  <ion-card>
+    <ion-card-content>
+      <h2>Total: ${{ obtenerTotal() | number }}</h2>
+      <ion-button expand="block" color="danger" (click)="vaciarCarrito()">Vaciar Carrito</ion-button>
+      <!-- NUEVO BOTÓN DE MÉTODO DE PAGO -->
+      <ion-button expand="block" color="success" (click)="pagar()">
+        Método de pago
+      </ion-button>
+    </ion-card-content>
+  </ion-card>
+</ion-content>
+
+<ng-template #vacio>
+  <ion-card>
+    <ion-card-content>
+      <h2>Tu carrito está vacío 😢</h2>
+    </ion-card-content>
+  </ion-card>
+</ng-template>

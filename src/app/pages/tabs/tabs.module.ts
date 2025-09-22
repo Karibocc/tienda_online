@@ -1,18 +1,16 @@
+import { IonicModule } from '@ionic/angular';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { IonicModule } from '@ionic/angular';
-import { RouterModule } from '@angular/router';
 import { TabsPage } from './tabs.page';
-
+import { TabsPageRoutingModule } from './tabs-routing.module';
 
 @NgModule({
   imports: [
-    CommonModule,
     IonicModule,
-    TabsPage, // ✅ Componente standalone importado
-    RouterModule.forChild([{ path: '', component: TabsPage }])
+    CommonModule,
+    TabsPageRoutingModule,
+    TabsPage // ✅ Aquí en imports porque es standalone
   ],
-  declarations: [] // ✅ Quitamos TabsPage de declarations
+  // declarations: [TabsPage], // ❌ quitar esta línea
 })
 export class TabsPageModule {}
-

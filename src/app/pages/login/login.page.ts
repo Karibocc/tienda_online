@@ -35,7 +35,8 @@ export class LoginPage {
         const auth = getAuth();
         await signInWithEmailAndPassword(auth, this.email, this.password);
 
-        this.navCtrl.navigateRoot('/bienvenida');
+        // ✅ Cambiado a catálogo
+        this.navCtrl.navigateRoot('/catalogo');
         console.log('Login exitoso con Firebase 🔥');
       } catch (error: any) {
         console.error('Error Firebase login:', error);
@@ -121,7 +122,8 @@ export class LoginPage {
         localStorage.setItem('usuarioEmail', user.email);
       }
 
-      this.navCtrl.navigateRoot('/bienvenida');
+      // ✅ Cambiado a catálogo
+      this.navCtrl.navigateRoot('/catalogo');
       console.log('Login con Google exitoso 🔥');
     } catch (error: any) {
       console.error('Error Google Sign-In:', error);
@@ -134,12 +136,4 @@ export class LoginPage {
     }
   }
 }
-
-
-
-
-
-
-
-
 

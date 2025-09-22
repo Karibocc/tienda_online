@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component } from '@angular/core'; 
 import { CommonModule } from '@angular/common';
 import { IonicModule, NavController } from '@ionic/angular';
 
@@ -25,6 +25,9 @@ export class BienvenidaPage {
     this.navCtrl.navigateRoot('/login');
     console.log('Sesión cerrada correctamente 🚪');
   }
+
+  // 🔹 Nuevo método para ir al catálogo
+  irAlCatalogo() {
+    this.navCtrl.navigateRoot('/catalogo');
+  }
 }
-
-

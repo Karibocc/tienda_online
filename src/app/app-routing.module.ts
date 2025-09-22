@@ -1,52 +1,56 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
-import { AuthGuard } from './guards/auth.guard'; // ✅ importamos el guard
+import { AuthGuard } from './guards/auth.guard'; // Guard para proteger rutas
 
-// 👇 Importamos las páginas standalone
+// Páginas standalone
 import { LoginPage } from './pages/login/login.page';
 import { RegistroPage } from './pages/registro/registro.page';
-import { BienvenidaPage } from './pages/bienvenida/bienvenida.page'; // ✅ nueva página importada
+import { BienvenidaPage } from './pages/bienvenida/bienvenida.page';
 
 const routes: Routes = [
+  // Redirección inicial: si entra a la raíz, va a login
   {
     path: '',
-    redirectTo: 'login', // ✅ la app inicia en login
+    redirectTo: 'login',
     pathMatch: 'full',
   },
+  // Login
   {
     path: 'login',
     component: LoginPage,
   },
-  {
-    path: 'tabs',
-    loadChildren: () =>
-      import('./pages/tabs/tabs.module').then((m) => m.TabsPageModule), // 👈 Ajuste: debe ir en /pages/tabs, no dentro de login
-    canActivate: [AuthGuard], // ✅ protegemos esta ruta
-  },
+  // Registro
   {
     path: 'registro',
     component: RegistroPage,
   },
+  // Página de bienvenida
   {
-    path: 'bienvenida', // ✅ nueva ruta de bienvenida
+    path: 'bienvenida',
     component: BienvenidaPage,
+    canActivate: [AuthGuard], // Solo accesible si está logueado
   },
+  // Catálogo
   {
-    path: '**', // ✅ ruta wildcard para no encontrados
+    path: 'catalogo',
+    loadComponent: () => import('./pages/catalogo/catalogo.page').then(m => m.CatalogoPage),
+    canActivate: [AuthGuard], // Protegemos para que solo usuarios logueados vean catálogo
+  },
+  // Tabs (carrito y otras secciones)
+  {
+    path: 'tabs',
+    loadChildren: () => import('./pages/tabs/tabs.module').then(m => m.TabsPageModule),
+    canActivate: [AuthGuard], // Protegemos rutas internas
+  },
+  // Wildcard: cualquier ruta no encontrada va al catálogo (o login)
+  {
+    path: '**',
     redirectTo: 'login',
   },
 ];
 
 @NgModule({
-  imports: [
-    RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules }),
-  ],
+  imports: [RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules })],
   exports: [RouterModule],
 })
 export class AppRoutingModule {}
-
-
-
-
-
-
