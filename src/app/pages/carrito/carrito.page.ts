@@ -55,7 +55,6 @@ export class CarritoPage {
     await toast.present();
   }
 
-  // ✅ Nuevo método de pago con alerta
   async pagar() {
     const alert = await this.alertCtrl.create({
       header: 'Seleccione un método de pago',
