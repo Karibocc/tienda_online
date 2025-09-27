@@ -10,7 +10,7 @@ const routes: Routes = [
   // 🔹 Ruta por defecto para pruebas: abrir directamente página de productos
   {
     path: '',
-    redirectTo: 'productos', // Aquí ponemos la página de productos del administrador
+    redirectTo: 'login', // Aquí ponemos la página de productos del administrador
     pathMatch: 'full',
   },
  

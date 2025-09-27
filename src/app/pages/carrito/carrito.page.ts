@@ -1,83 +1,89 @@
-import { Component } from '@angular/core';
-import { IonicModule, ToastController, AlertController } from '@ionic/angular';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { CarritoService, Producto } from 'src/app/services/carrito.service';
+import { IonicModule, AlertController } from '@ionic/angular';
+import { RouterModule } from '@angular/router'; // ← Agregar esta importación
+import { CarritoService, ProductoCarrito } from 'src/app/services/carrito.service';
 
 @Component({
   selector: 'app-carrito',
   templateUrl: './carrito.page.html',
   styleUrls: ['./carrito.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule]
+  imports: [CommonModule, IonicModule, RouterModule] // ← Agregar RouterModule aquí
 })
-export class CarritoPage {
-  productos: Producto[] = [];
+export class CarritoPage implements OnInit {
+  items: ProductoCarrito[] = [];
 
   constructor(
-    private carritoService: CarritoService, 
-    private toastCtrl: ToastController,
-    private alertCtrl: AlertController
+    public carritoService: CarritoService,
+    private alertController: AlertController
   ) {}
 
   ngOnInit() {
-    this.productos = this.carritoService.obtenerProductos();
+    this.cargarItems();
   }
 
-  aumentarCantidad(producto: Producto) {
-    this.carritoService.aumentarCantidad(producto);
+  cargarItems() {
+    this.items = this.carritoService.obtenerItems();
   }
 
-  disminuirCantidad(producto: Producto) {
-    this.carritoService.disminuirCantidad(producto);
-    this.productos = this.carritoService.obtenerProductos();
+  incrementarCantidad(item: ProductoCarrito) {
+    this.carritoService.actualizarCantidad(item.id, item.cantidad + 1);
+    this.cargarItems();
   }
 
-  eliminarProducto(producto: Producto) {
-    this.carritoService.eliminarProducto(producto.id);
-    this.productos = this.carritoService.obtenerProductos();
+  decrementarCantidad(item: ProductoCarrito) {
+    if (item.cantidad > 1) {
+      this.carritoService.actualizarCantidad(item.id, item.cantidad - 1);
+    } else {
+      this.eliminarProducto(item.id);
+    }
+    this.cargarItems();
   }
 
-  vaciarCarrito() {
-    this.carritoService.vaciarCarrito();
-    this.productos = this.carritoService.obtenerProductos();
-  }
-
-  obtenerTotal(): number {
-    return this.carritoService.obtenerTotal();
-  }
-
-  async mostrarToast(mensaje: string) {
-    const toast = await this.toastCtrl.create({
-      message: mensaje,
-      duration: 1500,
-      position: 'bottom'
-    });
-    await toast.present();
-  }
-
-  async pagar() {
-    const alert = await this.alertCtrl.create({
-      header: 'Seleccione un método de pago',
+  async eliminarProducto(id: number) {
+    const alert = await this.alertController.create({
+      header: 'Confirmar',
+      message: '¿Estás seguro de que quieres eliminar este producto del carrito?',
       buttons: [
-        {
-          text: 'Tarjeta',
-          handler: () => this.mostrarToast('Método de pago: Tarjeta seleccionado')
-        },
-        {
-          text: 'Efectivo',
-          handler: () => this.mostrarToast('Método de pago: Efectivo seleccionado')
-        },
-        {
-          text: 'PayPal',
-          handler: () => this.mostrarToast('Método de pago: PayPal seleccionado')
-        },
         {
           text: 'Cancelar',
           role: 'cancel'
+        },
+        {
+          text: 'Eliminar',
+          handler: () => {
+            this.carritoService.eliminarProducto(id);
+            this.cargarItems();
+          }
         }
       ]
     });
-
     await alert.present();
+  }
+
+  async vaciarCarrito() {
+    const alert = await this.alertController.create({
+      header: 'Confirmar',
+      message: '¿Estás seguro de que quieres vaciar todo el carrito?',
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel'
+        },
+        {
+          text: 'Vaciar',
+          handler: () => {
+            this.carritoService.vaciarCarrito();
+            this.cargarItems();
+          }
+        }
+      ]
+    });
+    await alert.present();
+  }
+
+  calcularSubtotal(item: ProductoCarrito): number {
+    return item.precio * item.cantidad;
   }
 }

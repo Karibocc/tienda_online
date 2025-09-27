@@ -19,7 +19,7 @@ export class AppComponent {
       const modoPruebas = true;
  
       if (modoPruebas) {
-        this.navCtrl.navigateRoot('/productos');
+        this.navCtrl.navigateRoot('/login');
       } else {
         this.navCtrl.navigateRoot('/login');
       }

@@ -1,17 +1,138 @@
-ion-card {
+.cargando {
   text-align: center;
-  img {
-    width: 100%;
-    height: 200px;
-    object-fit: cover;
-    border-radius: 10px;
+  padding: 40px;
+  color: var(--ion-color-medium);
+  
+  ion-spinner {
+    margin-bottom: 16px;
+    width: 40px;
+    height: 40px;
+  }
+  
+  p {
+    margin: 0;
+    font-size: 14px;
   }
 }
 
-ion-card-title {
-  font-weight: bold;
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--ion-color-medium);
+  
+  ion-icon {
+    font-size: 80px;
+    margin-bottom: 20px;
+    opacity: 0.7;
+  }
+  
+  h3 {
+    margin: 0 0 10px 0;
+    font-size: 18px;
+    font-weight: 600;
+  }
+  
+  p {
+    margin: 0 0 20px 0;
+    font-size: 14px;
+    opacity: 0.8;
+  }
 }
 
-ion-button {
-  margin-top: 10px;
+.producto-card {
+  margin-bottom: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+  }
+}
+
+.imagen-container {
+  height: 200px;
+  overflow: hidden;
+  border-radius: 12px 12px 0 0;
+  
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+  }
+
+  &:hover img {
+    transform: scale(1.05);
+  }
+}
+
+.producto-nombre {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: var(--ion-color-dark);
+}
+
+.producto-precio {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--ion-color-primary);
+  margin-top: 8px;
+}
+
+.producto-descripcion {
+  font-size: 14px;
+  color: var(--ion-color-medium);
+  line-height: 1.4;
+  margin-bottom: 16px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.boton-agregar {
+  --border-radius: 8px;
+  font-weight: 600;
+}
+
+.contador-productos {
+  text-align: center;
+  margin-top: 20px;
+  padding: 16px;
+  background: var(--ion-color-light);
+  border-radius: 8px;
+  
+  p {
+    margin: 0;
+    color: var(--ion-color-medium);
+    font-size: 14px;
+  }
+}
+
+// Badge del carrito
+ion-badge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  font-size: 10px;
+  min-width: 18px;
+  height: 18px;
+}
+
+// Responsive
+@media (max-width: 768px) {
+  .imagen-container {
+    height: 160px;
+  }
+  
+  .producto-nombre {
+    font-size: 14px;
+  }
+  
+  .producto-precio {
+    font-size: 16px;
+  }
 }

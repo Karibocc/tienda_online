@@ -1,32 +1,83 @@
 <ion-header>
   <ion-toolbar color="primary">
-    <ion-title>Catálogo de Electrodomésticos</ion-title>
+    <ion-title>Catálogo de Productos</ion-title>
     <ion-buttons slot="end">
       <ion-button [routerLink]="['/tabs/carrito']">
         <ion-icon slot="icon-only" name="cart"></ion-icon>
+        <ion-badge *ngIf="carritoService.obtenerCantidadTotal() > 0" color="danger">
+          {{ carritoService.obtenerCantidadTotal() }}
+        </ion-badge>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content class="ion-padding">
-  <ion-grid>
-    <ion-row>
-      <ion-col size="12" size-md="6" *ngFor="let producto of productos">
-        <ion-card>
-          <img [src]="producto.imagen" alt="{{ producto.nombre }}" style="width: 100%; height: 200px; object-fit: cover;">
-          <ion-card-header>
-            <ion-card-title>{{ producto.nombre }}</ion-card-title>
-            <ion-card-subtitle>${{ producto.precio | number }}</ion-card-subtitle>
-          </ion-card-header>
-          <ion-card-content>
-            <ion-button expand="block" (click)="agregarAlCarrito(producto)">
-              Añadir al carrito
-            </ion-button>
-          </ion-card-content>
-        </ion-card>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
-</ion-content>
+  
+  <!-- Indicador de carga -->
+  <div *ngIf="cargando" class="cargando">
+    <ion-spinner name="crescent"></ion-spinner>
+    <p>Cargando catálogo...</p>
+  </div>
 
+  <!-- Catálogo de productos -->
+  <div *ngIf="!cargando">
+    
+    <!-- Mensaje cuando no hay productos -->
+    <div *ngIf="productos.length === 0" class="empty-state">
+      <ion-icon name="cube-outline" size="large"></ion-icon>
+      <h3>No hay productos en el catálogo</h3>
+      <p>Agrega productos desde la sección de administración</p>
+      <ion-button [routerLink]="['/productos']" color="primary">
+        <ion-icon name="list" slot="start"></ion-icon>
+        Ir a Productos
+      </ion-button>
+    </div>
+
+    <!-- Grid de productos -->
+    <ion-grid *ngIf="productos.length > 0">
+      <ion-row>
+        <ion-col size="12" size-md="6" size-lg="4" *ngFor="let producto of productos">
+          <ion-card class="producto-card">
+            
+            <!-- Imagen del producto -->
+            <div class="imagen-container">
+              <img 
+                [src]="producto.imagen || 'assets/images/placeholder.jpg'" 
+                [alt]="producto.nombre"
+                (error)="producto.imagen = 'assets/images/placeholder.jpg'">
+            </div>
+            
+            <ion-card-header>
+              <ion-card-title class="producto-nombre">{{ producto.nombre }}</ion-card-title>
+              <ion-card-subtitle class="producto-precio">
+                {{ producto.precio | currency:'COP':'symbol':'1.0-0' }}
+              </ion-card-subtitle>
+            </ion-card-header>
+            
+            <ion-card-content>
+              <p class="producto-descripcion" *ngIf="producto.descripcion">
+                {{ producto.descripcion }}
+              </p>
+              
+              <ion-button 
+                expand="block" 
+                color="primary" 
+                (click)="agregarAlCarrito(producto)"
+                class="boton-agregar">
+                <ion-icon name="cart" slot="start"></ion-icon>
+                Añadir al carrito
+              </ion-button>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+
+    <!-- Contador de productos -->
+    <div *ngIf="productos.length > 0" class="contador-productos">
+      <p>Mostrando {{ productos.length }} producto(s)</p>
+    </div>
+  </div>
+
+</ion-content>
