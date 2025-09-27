@@ -1,0 +1,91 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="cancelar()">
+        <ion-icon name="arrow-back" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>{{ isEdit ? 'Editar' : 'Nuevo' }} Producto</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="limpiarFormulario()" *ngIf="!isEdit">
+        <ion-icon name="refresh" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="ion-padding">
+  <form (ngSubmit)="guardarProducto()">
+    
+    <!-- Campo Nombre -->
+    <ion-item>
+      <ion-label position="stacked">Nombre del Producto *</ion-label>
+      <ion-input 
+        type="text" 
+        [(ngModel)]="producto.nombre" 
+        name="nombre" 
+        required
+        placeholder="Ingresa el nombre del producto">
+      </ion-input>
+    </ion-item>
+
+    <!-- Campo Precio -->
+    <ion-item>
+      <ion-label position="stacked">Precio *</ion-label>
+      <ion-input 
+        type="number" 
+        [(ngModel)]="producto.precio" 
+        name="precio" 
+        required
+        min="0"
+        step="0.01"
+        placeholder="0.00">
+      </ion-input>
+    </ion-item>
+
+    <!-- Campo Descripción -->
+    <ion-item>
+      <ion-label position="stacked">Descripción</ion-label>
+      <ion-textarea 
+        [(ngModel)]="producto.descripcion" 
+        name="descripcion"
+        rows="4" 
+        placeholder="Describe el producto...">
+      </ion-textarea>
+    </ion-item>
+
+    <!-- Botones -->
+    <div class="button-container">
+      <ion-button 
+        type="submit" 
+        expand="block" 
+        color="primary"
+        [disabled]="!producto.nombre || producto.precio < 0">
+        <ion-icon name="save" slot="start"></ion-icon>
+        {{ isEdit ? 'Actualizar' : 'Guardar' }} Producto
+      </ion-button>
+
+      <ion-button 
+        expand="block" 
+        fill="outline" 
+        color="medium"
+        (click)="cancelar()">
+        <ion-icon name="close" slot="start"></ion-icon>
+        Cancelar
+      </ion-button>
+    </div>
+
+  </form>
+
+  <!-- Vista Previa -->
+  <ion-card *ngIf="producto.nombre || producto.descripcion" color="light">
+    <ion-card-header>
+      <ion-card-title>Vista Previa</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <p><strong>Nombre:</strong> {{ producto.nombre || 'No definido' }}</p>
+      <p><strong>Precio:</strong> {{ producto.precio | currency }}</p>
+      <p><strong>Descripción:</strong> {{ producto.descripcion || 'No definida' }}</p>
+    </ion-card-content>
+  </ion-card>
+</ion-content>
