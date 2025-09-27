@@ -14,6 +14,7 @@ import { Producto } from '../../models/producto.model';
 })
 export class ProductosPage implements OnInit {
   productos: Producto[] = [];
+  cargando: boolean = true;
 
   constructor(private productosService: ProductosService) {}
 
@@ -22,13 +23,27 @@ export class ProductosPage implements OnInit {
   }
 
   cargarProductos() {
-    this.productos = this.productosService.obtenerProductos();
+    this.cargando = true;
+    // Pequeño delay para simular carga (opcional)
+    setTimeout(() => {
+      this.productos = this.productosService.obtenerProductos();
+      this.cargando = false;
+      console.log('Productos cargados:', this.productos);
+    }, 300);
   }
 
   eliminarProducto(id: number) {
     if (confirm('¿Estás seguro de que quieres eliminar este producto?')) {
-      this.productosService.eliminarProducto(id);
-      this.cargarProductos();
+      const eliminado = this.productosService.eliminarProducto(id);
+      if (eliminado) {
+        this.cargarProductos(); // Recargar la lista
+      }
     }
+  }
+
+  // Método para formatear fecha
+  formatearFecha(fecha: Date | undefined): string {
+    if (!fecha) return 'N/A';
+    return new Date(fecha).toLocaleDateString('es-ES');
   }
 }

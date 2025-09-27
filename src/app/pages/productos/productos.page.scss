@@ -1,3 +1,12 @@
+.cargando {
+  text-align: center;
+  padding: 40px;
+  
+  ion-spinner {
+    margin-bottom: 16px;
+  }
+}
+
 .empty-state {
   text-align: center;
   padding: 40px 20px;
@@ -7,17 +16,17 @@
     font-size: 64px;
     margin-bottom: 16px;
   }
-  
-  p {
-    margin-bottom: 20px;
-  }
 }
 
-ion-item {
-  --padding-start: 16px;
-  --padding-end: 16px;
+ion-item-sliding {
+  margin-bottom: 8px;
 }
 
 ion-label p {
   white-space: normal;
+  margin: 2px 0;
+}
+
+ion-card {
+  margin-top: 20px;
 }
