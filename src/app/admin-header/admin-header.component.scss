@@ -1,0 +1,51 @@
+ion-toolbar {
+  --min-height: 70px;
+}
+
+ion-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+}
+
+ion-chip {
+  ion-avatar {
+    width: 24px;
+    height: 24px;
+    
+    ion-icon {
+      font-size: 20px;
+    }
+  }
+  
+  ion-label {
+    font-size: 14px;
+    max-width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+ion-menu {
+  ion-item {
+    --padding-start: 16px;
+    --padding-end: 16px;
+    
+    ion-icon {
+      margin-right: 12px;
+    }
+  }
+}
+
+// Responsive
+@media (max-width: 768px) {
+  ion-chip {
+    display: none;
+  }
+  
+  ion-title {
+    font-size: 16px;
+  }
+}

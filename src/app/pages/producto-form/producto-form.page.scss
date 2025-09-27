@@ -1,56 +1,22 @@
-.imagen-section {
-  margin-bottom: 20px;
+// Ajustar el contenido para el footer super compacto
+ion-content {
+  --padding-bottom: 60px; // Espacio para el footer
 }
 
-.imagen-content {
-  text-align: center;
+.admin-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  min-height: calc(100vh - 120px); // Ajustar altura considerando header + footer
+  padding: 16px;
 }
 
-.imagen-preview {
-  position: relative;
-  margin-bottom: 15px;
-  
-  img {
-    max-width: 200px;
-    max-height: 200px;
-    border-radius: 8px;
-    border: 2px solid var(--ion-color-light);
+// Para móviles
+@media (max-width: 768px) {
+  ion-content {
+    --padding-bottom: 80px; // Un poco más en móviles
   }
   
-  ion-button {
-    position: absolute;
-    top: -10px;
-    right: -10px;
-    --padding-start: 8px;
-    --padding-end: 8px;
+  .admin-container {
+    min-height: calc(100vh - 140px);
   }
-}
-
-.imagen-upload {
-  margin-bottom: 15px;
-  padding: 20px;
-  border: 2px dashed var(--ion-color-medium);
-  border-radius: 8px;
-  
-  ion-icon {
-    color: var(--ion-color-medium);
-    margin-bottom: 10px;
-  }
-  
-  p {
-    margin: 0;
-    color: var(--ion-color-medium);
-  }
-}
-
-.button-container {
-  margin-top: 20px;
-  
-  ion-button {
-    margin-bottom: 10px;
-  }
-}
-
-ion-item {
-  margin-bottom: 15px;
 }

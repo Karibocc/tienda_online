@@ -1,13 +1,5 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-button (click)="cancelar()">
-        <ion-icon name="arrow-back" slot="icon-only"></ion-icon>
-      </ion-button>
-    </ion-buttons>
-    <ion-title>{{ isEdit ? 'Editar' : 'Nuevo' }} Producto</ion-title>
-  </ion-toolbar>
-</ion-header>
+<!-- Header Administrador -->
+<app-admin-header></app-admin-header>
 
 <ion-content [fullscreen]="true" class="ion-padding">
   <form (ngSubmit)="guardarProducto()">
@@ -113,3 +105,6 @@
 
   </form>
 </ion-content>
+
+<!-- Footer Administrador -->
+<app-admin-footer></app-admin-footer>

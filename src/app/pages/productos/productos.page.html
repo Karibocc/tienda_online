@@ -1,35 +1,41 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>Lista de Productos</ion-title>
-    <ion-buttons slot="end">
-      <ion-button [routerLink]="['/productos/nuevo']">
+<!-- Header Administrador -->
+<app-admin-header></app-admin-header>
+
+<!-- Contenido Principal -->
+<ion-content [fullscreen]="true" id="admin-content">
+  <div class="admin-container ion-padding">
+    
+    <!-- Barra de acciones -->
+    <div class="action-bar">
+      <ion-button [routerLink]="['/productos/nuevo']" color="primary">
         <ion-icon name="add-circle" slot="start"></ion-icon>
         Nuevo Producto
       </ion-button>
-    </ion-buttons>
-  </ion-toolbar>
-</ion-header>
+      
+      <div class="stats">
+        <ion-chip color="primary">
+          <ion-label>Total: {{ productos.length }}</ion-label>
+        </ion-chip>
+        <ion-chip color="success">
+          <ion-label>Promedio: {{ calcularPrecioPromedio() | currency:'COP':'symbol':'1.0-0' }}</ion-label>
+        </ion-chip>
+      </div>
+    </div>
 
-<ion-content [fullscreen]="true">
-  <div class="ion-padding">
-    
     <!-- Indicador de carga -->
     <div *ngIf="cargando" class="cargando">
       <ion-spinner name="crescent"></ion-spinner>
       <p>Cargando productos...</p>
     </div>
 
-    <!-- Lista de productos -->
+    <!-- Lista de productos (mantener tu código existente) -->
     <div *ngIf="!cargando">
       <ion-list>
         <ion-item-sliding *ngFor="let producto of productos">
-          
           <ion-item>
-            <!-- Imagen del producto -->
             <ion-thumbnail slot="start">
               <img [src]="producto.imagen || 'assets/images/placeholder.jpg'" 
-                   [alt]="producto.nombre"
-                   (error)="producto.imagen = 'assets/images/placeholder.jpg'">
+                   [alt]="producto.nombre">
             </ion-thumbnail>
 
             <ion-label>
@@ -37,7 +43,6 @@
               <p><strong>Precio:</strong> {{ producto.precio | currency:'COP':'symbol':'1.0-0' }}</p>
               <p><strong>Descripción:</strong> {{ producto.descripcion }}</p>
               <p><strong>Creado:</strong> {{ formatearFecha(producto.fechaCreacion) }}</p>
-              <p><strong>ID:</strong> {{ producto.id }}</p>
             </ion-label>
 
             <ion-buttons slot="end">
@@ -49,44 +54,21 @@
               </ion-button>
             </ion-buttons>
           </ion-item>
-
-          <ion-item-options side="end">
-            <ion-item-option color="primary" [routerLink]="['/productos/editar', producto.id]">
-              <ion-icon name="pencil" slot="start"></ion-icon>
-              Editar
-            </ion-item-option>
-            <ion-item-option color="danger" (click)="eliminarProducto(producto.id!)">
-              <ion-icon name="trash" slot="start"></ion-icon>
-              Eliminar
-            </ion-item-option>
-          </ion-item-options>
-
         </ion-item-sliding>
       </ion-list>
 
-      <!-- Estadísticas -->
-      <ion-card *ngIf="productos.length > 0">
-        <ion-card-header>
-          <ion-card-title>Resumen</ion-card-title>
-        </ion-card-header>
-        <ion-card-content>
-          <p><strong>Total de productos:</strong> {{ productos.length }}</p>
-          <p><strong>Precio promedio:</strong> {{ calcularPrecioPromedio() | currency:'COP':'symbol':'1.0-0'  }}</p>
-          <p><strong>Producto más caro:</strong> {{ obtenerProductoMasCaro()?.nombre || 'N/A' }}</p>
-        </ion-card-content>
-      </ion-card>
-    </div>
-
-    <!-- Mensaje cuando no hay productos -->
-    <div *ngIf="!cargando && productos.length === 0" class="empty-state">
-      <ion-icon name="cube-outline" size="large"></ion-icon>
-      <h3>No hay productos registrados</h3>
-      <p>Comienza agregando tu primer producto</p>
-      <ion-button [routerLink]="['/productos/nuevo']" color="primary">
-        <ion-icon name="add" slot="start"></ion-icon>
-        Crear primer producto
-      </ion-button>
+      <!-- Mensaje cuando no hay productos -->
+      <div *ngIf="productos.length === 0" class="empty-state">
+        <ion-icon name="cube-outline" size="large"></ion-icon>
+        <h3>No hay productos registrados</h3>
+        <ion-button [routerLink]="['/productos/nuevo']" color="primary">
+          Crear primer producto
+        </ion-button>
+      </div>
     </div>
 
   </div>
 </ion-content>
+
+<!-- Footer Administrador -->
+<app-admin-footer></app-admin-footer>

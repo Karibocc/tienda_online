@@ -1,3 +1,24 @@
+.admin-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  min-height: calc(100vh - 140px); // Ajustar altura
+}
+
+.action-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 16px;
+  
+  .stats {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+}
+
 .cargando {
   text-align: center;
   padding: 40px;

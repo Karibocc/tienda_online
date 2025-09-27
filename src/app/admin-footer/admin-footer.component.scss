@@ -1,0 +1,113 @@
+.super-compact-footer {
+  ion-toolbar {
+    --min-height: 50px;
+    --padding-start: 16px;
+    --padding-end: 16px;
+    
+    ion-grid {
+      padding: 0;
+    }
+    
+    small {
+      font-size: 11px;
+      opacity: 0.9;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      
+      ion-icon {
+        font-size: 12px;
+      }
+    }
+  }
+  
+  .developers-col {
+    padding: 0;
+    
+    @media (max-width: 768px) {
+      order: 1;
+      flex: 1 0 100%;
+      text-align: center;
+      margin-bottom: 4px;
+    }
+  }
+  
+  .github-col {
+    padding: 0 12px;
+    
+    @media (max-width: 768px) {
+      order: 3;
+      padding: 0;
+    }
+  }
+  
+  .copyright-col {
+    padding: 0;
+    
+    @media (max-width: 768px) {
+      order: 2;
+      padding: 0;
+    }
+  }
+  
+  .github-btn {
+    --padding-start: 8px;
+    --padding-end: 8px;
+    margin: 0;
+    height: 28px;
+    font-size: 11px;
+    
+    ion-icon {
+      font-size: 14px;
+      margin-right: 4px;
+    }
+    
+    &:hover {
+      --background: rgba(255, 255, 255, 0.1);
+    }
+  }
+}
+
+// Responsive para móviles
+@media (max-width: 768px) {
+  .super-compact-footer {
+    ion-toolbar {
+      --min-height: 70px;
+      --padding-start: 8px;
+      --padding-end: 8px;
+    }
+    
+    ion-row {
+      flex-direction: column;
+      gap: 4px;
+      text-align: center;
+    }
+    
+    .developers-col,
+    .github-col,
+    .copyright-col {
+      flex: 1;
+      text-align: center;
+    }
+  }
+}
+
+// Para pantallas muy pequeñas
+@media (max-width: 480px) {
+  .super-compact-footer {
+    ion-toolbar {
+      small {
+        font-size: 10px;
+        
+        ion-icon {
+          display: none; // Ocultar íconos en móviles muy pequeños
+        }
+      }
+    }
+    
+    .github-btn {
+      font-size: 10px;
+      height: 26px;
+    }
+  }
+}

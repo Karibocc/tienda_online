@@ -1,0 +1,38 @@
+<ion-footer class="super-compact-footer">
+  <ion-toolbar color="medium">
+    <ion-grid>
+      <ion-row class="ion-align-items-center ion-justify-content-between">
+        <!-- Desarrolladores -->
+        <ion-col size="auto" class="developers-col">
+          <ion-text color="light">
+            <small>
+              <ion-icon name="code-slash" size="small"></ion-icon>
+              Desarrollado por: 
+              <p>Lesly Ariza</p>
+              <p>Karina Bocanegra</p>
+              <p>Ana Ruiz</p>
+            </small>
+          </ion-text>
+        </ion-col>
+        
+        <!-- GitHub Link -->
+        <ion-col size="auto" class="github-col">
+          <ion-button size="small" fill="clear" color="light" (click)="abrirGithub()" class="github-btn">
+            <ion-icon name="logo-github" slot="start"></ion-icon>
+            GitHub
+          </ion-button>
+        </ion-col>
+        
+        <!-- Copyright -->
+        <ion-col size="auto" class="copyright-col">
+          <ion-text color="light">
+            <small>
+              <ion-icon name="business" size="small"></ion-icon>
+              &copy; 2025 TIENDA App
+            </small>
+          </ion-text>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-toolbar>
+</ion-footer>

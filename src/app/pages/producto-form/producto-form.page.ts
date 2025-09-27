@@ -5,13 +5,16 @@ import { IonicModule } from '@ionic/angular';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { ProductosService } from '../../services/productos.service';
 import { Producto } from '../../models/producto.model';
+import { AdminHeaderComponent } from '../../admin-header/admin-header.component'; // ← Nuevo
+import { AdminFooterComponent } from '../../admin-footer/admin-footer.component'; // ← Nuevo
 
 @Component({
   selector: 'app-producto-form',
   templateUrl: './producto-form.page.html',
   styleUrls: ['./producto-form.page.scss'],
   standalone: true,
-  imports: [CommonModule, FormsModule, IonicModule, RouterModule]
+  imports: [CommonModule, FormsModule, IonicModule, RouterModule, AdminHeaderComponent, // ← Agregar
+      AdminFooterComponent ]
 })
 export class ProductoFormPage implements OnInit {
   producto: Producto = {

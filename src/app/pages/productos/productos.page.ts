@@ -4,13 +4,21 @@ import { IonicModule } from '@ionic/angular';
 import { RouterModule } from '@angular/router';
 import { ProductosService } from '../../services/productos.service';
 import { Producto } from '../../models/producto.model';
+import { AdminHeaderComponent } from '../../admin-header/admin-header.component'; // ← Nuevo
+import { AdminFooterComponent } from '../../admin-footer/admin-footer.component'; // ← Nuevo
 
 @Component({
   selector: 'app-productos',
   templateUrl: './productos.page.html',
   styleUrls: ['./productos.page.scss'],
   standalone: true,
-  imports: [CommonModule, IonicModule, RouterModule]
+  imports: [
+    CommonModule, 
+    IonicModule, 
+    RouterModule,
+    AdminHeaderComponent, // ← Agregar
+    AdminFooterComponent  // ← Agregar
+  ]
 })
 export class ProductosPage implements OnInit {
   productos: Producto[] = [];
@@ -22,6 +30,7 @@ export class ProductosPage implements OnInit {
     this.cargarProductos();
   }
 
+  // ... el resto del código permanece igual
   cargarProductos() {
     this.cargando = true;
     setTimeout(() => {
@@ -41,11 +50,7 @@ export class ProductosPage implements OnInit {
 
   formatearFecha(fecha: Date | undefined): string {
     if (!fecha) return 'N/A';
-    return new Date(fecha).toLocaleDateString('es-ES', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric'
-    });
+    return new Date(fecha).toLocaleDateString('es-ES');
   }
 
   calcularPrecioPromedio(): number {
