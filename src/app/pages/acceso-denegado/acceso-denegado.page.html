@@ -1,0 +1,24 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="danger">
+    <ion-title>Acceso Denegado</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="ion-padding">
+  <div class="acceso-denegado">
+    <ion-icon name="lock-closed" size="large" color="danger"></ion-icon>
+    <h2>Acceso Restringido</h2>
+    <p>No tienes permisos para acceder a esta sección.</p>
+    <p>Esta área es solo para administradores.</p>
+    
+    <ion-button [routerLink]="['/catalogo']" expand="block" color="primary">
+      <ion-icon name="storefront" slot="start"></ion-icon>
+      Ir al Catálogo
+    </ion-button>
+    
+    <ion-button [routerLink]="['/login']" expand="block" fill="outline" color="medium">
+      <ion-icon name="log-in" slot="start"></ion-icon>
+      Iniciar Sesión
+    </ion-button>
+  </div>
+</ion-content>

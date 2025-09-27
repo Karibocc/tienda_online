@@ -1,5 +1,7 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
+import { AuthGuard } from './guards/auth.guard';
+import { AdminGuard } from './guards/admin.guard';
  
 // Páginas standalone
 import { LoginPage } from './pages/login/login.page';
@@ -7,57 +9,63 @@ import { RegistroPage } from './pages/registro/registro.page';
 import { BienvenidaPage } from './pages/bienvenida/bienvenida.page';
  
 const routes: Routes = [
-  // 🔹 Ruta por defecto para pruebas: abrir directamente página de productos
+  // 🔹 Ruta por defecto
   {
     path: '',
-    redirectTo: 'login', // Aquí ponemos la página de productos del administrador
+    redirectTo: 'login',
     pathMatch: 'full',
   },
- 
-  // Login
+
+  // 🔹 Rutas públicas
   {
     path: 'login',
-    component: LoginPage,
+    loadComponent: () => import('./pages/login/login.page').then(m => m.LoginPage),
   },
- 
-  // Registro
   {
     path: 'registro',
-    component: RegistroPage,
+    loadComponent: () => import('./pages/registro/registro.page').then(m => m.RegistroPage),
   },
- 
-  // Bienvenida (AuthGuard temporalmente ignorado para pruebas)
-  {
-    path: 'bienvenida',
-    component: BienvenidaPage,
-    // canActivate: [AuthGuard], // 🔹 Comentado para pruebas
-  },
- 
-  // Catálogo (AuthGuard ignorado para pruebas)
   {
     path: 'catalogo',
     loadComponent: () => import('./pages/catalogo/catalogo.page').then(m => m.CatalogoPage),
-    // canActivate: [AuthGuard], // 🔹 Comentado para pruebas
   },
- 
-  // Tabs (AuthGuard ignorado)
   {
-    path: 'tabs',
-    loadChildren: () => import('./pages/tabs/tabs.module').then(m => m.TabsPageModule),
-    // canActivate: [AuthGuard], // 🔹 Comentado para pruebas
+    path: 'carrito',
+    loadComponent: () => import('./pages/carrito/carrito.page').then(m => m.CarritoPage),
   },
- 
-  // Página de productos del administrador (sin AuthGuard)
+
+  // 🔹 Rutas protegidas (requieren autenticación)
+  {
+    path: 'bienvenida',
+    loadComponent: () => import('./pages/bienvenida/bienvenida.page').then(m => m.BienvenidaPage),
+    canActivate: [AuthGuard],
+  },
+
+  // 🔹 Rutas de administrador (requieren rol admin)
   {
     path: 'productos',
     loadComponent: () => import('./pages/productos/productos.page').then(m => m.ProductosPage),
+    canActivate: [AdminGuard],
   },
- {
-    path: 'productos/nuevo',  // ← Esta ruta debe existir
-    loadComponent: () => import('./pages/producto-form/producto-form.page').then(m => m.ProductoFormPage)
+  {
+    path: 'productos/nuevo',
+    loadComponent: () => import('./pages/producto-form/producto-form.page').then(m => m.ProductoFormPage),
+    canActivate: [AdminGuard],
   },
-  // Ruta comodín (opcionalmente comentada para pruebas)
-  // { path: '**', redirectTo: 'login' },
+  {
+    path: 'productos/editar/:id',
+    loadComponent: () => import('./pages/producto-form/producto-form.page').then(m => m.ProductoFormPage),
+    canActivate: [AdminGuard],
+  },
+
+  // 🔹 Página de acceso denegado
+  {
+    path: 'acceso-denegado',
+    loadComponent: () => import('./pages/acceso-denegado/acceso-denegado.page').then(m => m.AccesoDenegadoPage),
+  },
+
+  // 🔹 Ruta comodín
+  { path: '**', redirectTo: 'login' },
 ];
  
 @NgModule({

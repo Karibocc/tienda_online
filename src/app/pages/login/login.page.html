@@ -1,39 +1,128 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>Login</ion-title>
+<ion-header [translucent]="true">
+  <ion-toolbar color="primary">
+    <ion-title>Iniciar Sesión</ion-title>
+    <ion-buttons slot="end">
+      <ion-button [routerLink]="['/catalogo']" fill="clear">
+        <ion-icon name="storefront" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-padding">
-  <ion-item>
-    <ion-label position="floating">Correo</ion-label>
-    <ion-input [(ngModel)]="email" type="email"></ion-input>
-  </ion-item>
+<ion-content [fullscreen]="true" class="ion-padding">
+  <div class="login-container">
+    
+    <!-- Logo o Título -->
+    <div class="logo-section">
+      <ion-icon name="lock-closed" size="large" color="primary"></ion-icon>
+      <h2>Bienvenido</h2>
+      <p>Inicia sesión en tu cuenta</p>
+    </div>
 
-  <ion-item>
-    <ion-label position="floating">Contraseña</ion-label>
-    <ion-input [(ngModel)]="password" type="password"></ion-input>
-  </ion-item>
+    <!-- Formulario de Login -->
+    <form (ngSubmit)="login()" #loginForm="ngForm">
+      
+      <!-- Email -->
+      <ion-item>
+        <ion-label position="stacked">Email</ion-label>
+        <ion-input 
+          type="email" 
+          [(ngModel)]="credenciales.email" 
+          name="email"
+          required
+          placeholder="tu@email.com"
+          autocomplete="email">
+        </ion-input>
+      </ion-item>
 
-  <ion-button expand="full" class="ion-margin-top" (click)="iniciarSesion()">
-    Iniciar Sesión
-  </ion-button>
+      <!-- Contraseña -->
+      <ion-item>
+        <ion-label position="stacked">Contraseña</ion-label>
+        <ion-input 
+          type="password" 
+          [(ngModel)]="credenciales.password" 
+          name="password"
+          required
+          placeholder="Ingresa tu contraseña"
+          autocomplete="current-password">
+        </ion-input>
+      </ion-item>
 
-  <ion-button expand="full" color="danger" class="ion-margin-top" (click)="loginConGoogle()">
-    Iniciar con Google
-  </ion-button>
+      <!-- Recordarme y Olvidé contraseña -->
+      <div class="options-section">
+        <ion-item lines="none">
+          <ion-checkbox [(ngModel)]="recordarme" name="recordarme" slot="start"></ion-checkbox>
+          <ion-label>Recordarme</ion-label>
+        </ion-item>
+        
+        <ion-button fill="clear" size="small" (click)="olvidePassword()">
+          ¿Olvidaste tu contraseña?
+        </ion-button>
+      </div>
 
-  <ion-button expand="full" fill="clear" class="ion-margin-top" (click)="olvidarContrasena()">
-    ¿Olvidaste tu contraseña?
-  </ion-button>
+      <!-- Botón de Login -->
+      <ion-button 
+        type="submit" 
+        expand="block" 
+        color="primary"
+        [disabled]="isLoading || !credenciales.email || !credenciales.password"
+        class="login-button">
+        <ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>
+        <span *ngIf="!isLoading">Iniciar Sesión</span>
+      </ion-button>
 
-  <ion-button expand="full" fill="clear" class="ion-margin-top" (click)="registrar()">
-    Registrar nuevo usuario
-  </ion-button>
+    </form>
+
+    <!-- Separador -->
+    <div class="separator">
+      <span>o</span>
+    </div>
+
+    <!-- Botones de acceso rápido (solo para desarrollo) -->
+    <div class="quick-access" *ngIf="!isLoading">
+      <ion-button 
+        expand="block" 
+        fill="outline" 
+        color="success" 
+        size="small"
+        (click)="loginRapido('admin')">
+        <ion-icon name="shield-checkmark" slot="start"></ion-icon>
+        Acceso Admin
+      </ion-button>
+      
+      <ion-button 
+        expand="block" 
+        fill="outline" 
+        color="medium" 
+        size="small"
+        (click)="loginRapido('usuario')">
+        <ion-icon name="person" slot="start"></ion-icon>
+        Acceso Usuario
+      </ion-button>
+    </div>
+
+    <!-- Enlace a Registro -->
+    <div class="register-section">
+      <p>¿No tienes una cuenta?</p>
+      <ion-button 
+        expand="block" 
+        fill="clear" 
+        color="medium"
+        (click)="irARegistro()">
+        Crear cuenta nueva
+      </ion-button>
+    </div>
+
+    <!-- Información de roles -->
+    <ion-card color="light" class="info-card">
+      <ion-card-header>
+        <ion-card-title>Información de Accesos</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <p><strong>Administrador:</strong> Acceso completo a todos los módulos</p>
+        <p><strong>Usuario:</strong> Acceso al catálogo y carrito de compras</p>
+      </ion-card-content>
+    </ion-card>
+
+  </div>
 </ion-content>
-
-
-
-
-
-

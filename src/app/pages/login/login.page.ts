@@ -1,139 +1,219 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonicModule, NavController, AlertController } from '@ionic/angular';
-import { getAuth, sendPasswordResetEmail, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from '@angular/fire/auth';
+import { IonicModule, ToastController, LoadingController } from '@ionic/angular';
+import { Router, RouterModule } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.page.html',
   styleUrls: ['./login.page.scss'],
   standalone: true,
-  imports: [CommonModule, FormsModule, IonicModule]
+  imports: [CommonModule, FormsModule, IonicModule, RouterModule]
 })
-export class LoginPage {
-  email: string = '';
-  password: string = '';
+export class LoginPage implements OnInit {
+  credenciales = {
+    email: '',
+    password: ''
+  };
+  
+  recordarme: boolean = false;
+  isLoading: boolean = false;
 
   constructor(
-    private navCtrl: NavController,
-    private alertCtrl: AlertController
+    private authService: AuthService,
+    private router: Router,
+    private toastController: ToastController,
+    private loadingController: LoadingController
   ) {}
 
-  // 👉 Redirige a la página de registro
-  registrar() {
-    this.navCtrl.navigateForward('/registro');
+  ngOnInit() {
+    // Cargar credenciales guardadas si "Recordarme" estaba activado
+    this.cargarCredencialesGuardadas();
   }
 
-  // 👉 Iniciar sesión con Firebase Authentication
-  async iniciarSesion() {
-    if (this.email && this.password) {
-      console.log('Iniciar sesión con:', this.email, this.password);
-      localStorage.setItem('usuarioEmail', this.email);
+  // Cargar credenciales desde localStorage
+  private cargarCredencialesGuardadas() {
+    const emailGuardado = localStorage.getItem('rememberEmail');
+    const recordarme = localStorage.getItem('rememberMe') === 'true';
+    
+    if (recordarme && emailGuardado) {
+      this.credenciales.email = emailGuardado;
+      this.recordarme = true;
+    }
+  }
 
-      try {
-        const auth = getAuth();
-        await signInWithEmailAndPassword(auth, this.email, this.password);
-
-        // ✅ Cambiado a catálogo
-        this.navCtrl.navigateRoot('/catalogo');
-        console.log('Login exitoso con Firebase 🔥');
-      } catch (error: any) {
-        console.error('Error Firebase login:', error);
-        const fail = await this.alertCtrl.create({
-          header: 'Error de autenticación',
-          message: error?.message || 'Correo o contraseña incorrectos. Intenta de nuevo.',
-          buttons: ['OK']
-        });
-        await fail.present();
-      }
+  // Guardar credenciales en localStorage
+  private guardarCredenciales() {
+    if (this.recordarme) {
+      localStorage.setItem('rememberEmail', this.credenciales.email);
+      localStorage.setItem('rememberMe', 'true');
     } else {
-      alert('Por favor ingresa tu correo y contraseña ⚠️');
+      localStorage.removeItem('rememberEmail');
+      localStorage.removeItem('rememberMe');
     }
   }
 
-  // 👉 Cierra la sesión y regresa al login
-  async cerrarSesion() {
-    const auth = getAuth();
+  async login() {
+    // Validaciones básicas
+    if (!this.credenciales.email || !this.credenciales.password) {
+      this.mostrarToast('Por favor, completa todos los campos', 'warning');
+      return;
+    }
+
+    if (!this.validarEmail(this.credenciales.email)) {
+      this.mostrarToast('Por favor, ingresa un email válido', 'warning');
+      return;
+    }
+
+    this.isLoading = true;
+
+    // Mostrar loading
+    const loading = await this.loadingController.create({
+      message: 'Iniciando sesión...',
+      spinner: 'crescent'
+    });
+    await loading.present();
+
     try {
-      await auth.signOut();
-      localStorage.removeItem('usuarioEmail');
-      console.log('Sesión cerrada en Firebase 🚪');
-      this.navCtrl.navigateRoot('/login');
-    } catch (err) {
-      console.error('Error cerrando sesión Firebase:', err);
+      // Intentar login
+      await this.authService.login(this.credenciales.email, this.credenciales.password);
+      
+      // Guardar credenciales si "Recordarme" está activado
+      this.guardarCredenciales();
+
+      // Ocultar loading
+      await loading.dismiss();
+      this.isLoading = false;
+
+      // Mostrar mensaje de éxito
+      await this.mostrarToast('¡Inicio de sesión exitoso!', 'success');
+
+      // Redirigir según el rol del usuario
+      this.redirigirSegunRol();
+
+    } catch (error: any) {
+      // Ocultar loading
+      await loading.dismiss();
+      this.isLoading = false;
+
+      // Manejar errores específicos de Firebase
+      let mensajeError = 'Error al iniciar sesión. Por favor, intenta nuevamente.';
+      
+      switch (error.code) {
+        case 'auth/invalid-email':
+          mensajeError = 'El formato del email no es válido.';
+          break;
+        case 'auth/user-disabled':
+          mensajeError = 'Esta cuenta ha sido deshabilitada.';
+          break;
+        case 'auth/user-not-found':
+          mensajeError = 'No existe una cuenta con este email.';
+          break;
+        case 'auth/wrong-password':
+          mensajeError = 'La contraseña es incorrecta.';
+          break;
+        case 'auth/too-many-requests':
+          mensajeError = 'Demasiados intentos fallidos. Intenta más tarde.';
+          break;
+        case 'auth/network-request-failed':
+          mensajeError = 'Error de conexión. Verifica tu internet.';
+          break;
+      }
+
+      this.mostrarToast(mensajeError, 'danger');
     }
   }
 
-  // 🔹 Recuperar contraseña con Firebase
-  async olvidarContrasena() {
-    const alert = await this.alertCtrl.create({
-      header: 'Recuperar contraseña',
-      message: 'Por favor ingresa tu correo para enviar el enlace de recuperación.',
-      inputs: [{ name: 'email', type: 'email', placeholder: 'ejemplo@correo.com' }],
+  // Redirigir según el rol del usuario
+  private redirigirSegunRol() {
+    if (this.authService.isAdmin()) {
+      // Usuario administrador → ir a gestión de productos
+      this.router.navigate(['/productos']);
+      console.log('Redirigiendo a panel de administrador');
+    } else {
+      // Usuario normal → ir al catálogo
+      this.router.navigate(['/catalogo']);
+      console.log('Redirigiendo a catálogo');
+    }
+  }
+
+  // Validar formato de email
+  private validarEmail(email: string): boolean {
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return regex.test(email);
+  }
+
+  // Login rápido para testing (eliminar en producción)
+  async loginRapido(tipo: 'admin' | 'usuario') {
+    if (tipo === 'admin') {
+      this.credenciales.email = 'admin@tienda.com';
+      this.credenciales.password = 'admin123';
+    } else {
+      this.credenciales.email = 'usuario@tienda.com';
+      this.credenciales.password = 'usuario123';
+    }
+    
+    // Auto-login después de 500ms
+    setTimeout(() => {
+      this.login();
+    }, 500);
+  }
+
+  // Navegar a registro
+  irARegistro() {
+    this.router.navigate(['/registro']);
+  }
+
+  // Olvidé mi contraseña
+  async olvidePassword() {
+    if (!this.credenciales.email) {
+      this.mostrarToast('Por favor, ingresa tu email primero', 'warning');
+      return;
+    }
+
+    if (!this.validarEmail(this.credenciales.email)) {
+      this.mostrarToast('Por favor, ingresa un email válido', 'warning');
+      return;
+    }
+
+    try {
+      await this.authService.forgotPassword(this.credenciales.email);
+      this.mostrarToast('Se ha enviado un email para restablecer tu contraseña', 'success');
+    } catch (error: any) {
+      let mensajeError = 'Error al enviar el email de recuperación.';
+      
+      if (error.code === 'auth/user-not-found') {
+        mensajeError = 'No existe una cuenta con este email.';
+      }
+      
+      this.mostrarToast(mensajeError, 'danger');
+    }
+  }
+
+  // Mostrar toast/notificación
+  private async mostrarToast(mensaje: string, color: 'success' | 'danger' | 'warning') {
+    const toast = await this.toastController.create({
+      message: mensaje,
+      duration: 3000,
+      position: 'bottom',
+      color: color,
       buttons: [
-        { text: 'Cancelar', role: 'cancel' },
         {
-          text: 'Enviar',
-          handler: async (data) => {
-            if (data.email) {
-              try {
-                const auth = getAuth();
-                await sendPasswordResetEmail(auth, data.email);
-                const ok = await this.alertCtrl.create({
-                  header: 'Éxito',
-                  message: 'Se ha enviado un enlace de recuperación a ' + data.email,
-                  buttons: ['OK']
-                });
-                await ok.present();
-              } catch (error: any) {
-                console.error(error);
-                const fail = await this.alertCtrl.create({
-                  header: 'Error',
-                  message: error?.message || 'No se pudo enviar el correo. Verifica tu email.',
-                  buttons: ['OK']
-                });
-                await fail.present();
-              }
-            } else {
-              const warn = await this.alertCtrl.create({
-                header: 'Advertencia',
-                message: 'Debes ingresar un correo válido ⚠️',
-                buttons: ['OK']
-              });
-              await warn.present();
-            }
-          }
+          text: 'OK',
+          role: 'cancel'
         }
       ]
     });
-    await alert.present();
+    await toast.present();
   }
 
-  // 🔹 Login con Google
-  async loginConGoogle() {
-    const provider = new GoogleAuthProvider();
-    try {
-      const auth = getAuth();
-      await signInWithPopup(auth, provider);
-
-      const user = auth.currentUser;
-      if (user?.email) {
-        localStorage.setItem('usuarioEmail', user.email);
-      }
-
-      // ✅ Cambiado a catálogo
-      this.navCtrl.navigateRoot('/catalogo');
-      console.log('Login con Google exitoso 🔥');
-    } catch (error: any) {
-      console.error('Error Google Sign-In:', error);
-      const fail = await this.alertCtrl.create({
-        header: 'Error Google Sign-In',
-        message: error?.message || 'No se pudo iniciar sesión con Google.',
-        buttons: ['OK']
-      });
-      await fail.present();
-    }
+  // Limpiar formulario
+  limpiarFormulario() {
+    this.credenciales = {
+      email: '',
+      password: ''
+    };
   }
 }
-
