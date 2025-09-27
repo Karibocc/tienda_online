@@ -24,26 +24,40 @@ export class ProductosPage implements OnInit {
 
   cargarProductos() {
     this.cargando = true;
-    // Pequeño delay para simular carga (opcional)
     setTimeout(() => {
       this.productos = this.productosService.obtenerProductos();
       this.cargando = false;
-      console.log('Productos cargados:', this.productos);
-    }, 300);
+    }, 500);
   }
 
   eliminarProducto(id: number) {
     if (confirm('¿Estás seguro de que quieres eliminar este producto?')) {
       const eliminado = this.productosService.eliminarProducto(id);
       if (eliminado) {
-        this.cargarProductos(); // Recargar la lista
+        this.cargarProductos();
       }
     }
   }
 
-  // Método para formatear fecha
   formatearFecha(fecha: Date | undefined): string {
     if (!fecha) return 'N/A';
-    return new Date(fecha).toLocaleDateString('es-ES');
+    return new Date(fecha).toLocaleDateString('es-ES', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    });
+  }
+
+  calcularPrecioPromedio(): number {
+    if (this.productos.length === 0) return 0;
+    const total = this.productos.reduce((sum, producto) => sum + producto.precio, 0);
+    return total / this.productos.length;
+  }
+
+  obtenerProductoMasCaro(): Producto | null {
+    if (this.productos.length === 0) return null;
+    return this.productos.reduce((max, producto) => 
+      producto.precio > max.precio ? producto : max
+    );
   }
 }

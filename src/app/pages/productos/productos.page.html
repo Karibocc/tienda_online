@@ -15,43 +15,67 @@
     
     <!-- Indicador de carga -->
     <div *ngIf="cargando" class="cargando">
-      <ion-spinner></ion-spinner>
+      <ion-spinner name="crescent"></ion-spinner>
       <p>Cargando productos...</p>
     </div>
 
     <!-- Lista de productos -->
-    <ion-list *ngIf="!cargando">
-      <ion-item-sliding *ngFor="let producto of productos">
-        <ion-item>
-          <ion-label>
-            <h2>{{ producto.nombre }}</h2>
-            <p><strong>Precio:</strong> {{ producto.precio | currency:'USD':'symbol':'1.2-2' }}</p>
-            <p><strong>Descripción:</strong> {{ producto.descripcion }}</p>
-            <p><strong>Creado:</strong> {{ formatearFecha(producto.fechaCreacion) }}</p>
-            <p><strong>ID:</strong> {{ producto.id }}</p>
-          </ion-label>
-          <ion-buttons slot="end">
-            <ion-button [routerLink]="['/productos/editar', producto.id]" color="primary">
-              <ion-icon name="pencil" slot="icon-only"></ion-icon>
-            </ion-button>
-            <ion-button (click)="eliminarProducto(producto.id!)" color="danger">
-              <ion-icon name="trash" slot="icon-only"></ion-icon>
-            </ion-button>
-          </ion-buttons>
-        </ion-item>
+    <div *ngIf="!cargando">
+      <ion-list>
+        <ion-item-sliding *ngFor="let producto of productos">
+          
+          <ion-item>
+            <!-- Imagen del producto -->
+            <ion-thumbnail slot="start">
+              <img [src]="producto.imagen || 'assets/images/placeholder.jpg'" 
+                   [alt]="producto.nombre"
+                   (error)="producto.imagen = 'assets/images/placeholder.jpg'">
+            </ion-thumbnail>
 
-        <ion-item-options side="end">
-          <ion-item-option color="primary" [routerLink]="['/productos/editar', producto.id]">
-            <ion-icon name="pencil" slot="icon-only"></ion-icon>
-            Editar
-          </ion-item-option>
-          <ion-item-option color="danger" (click)="eliminarProducto(producto.id!)">
-            <ion-icon name="trash" slot="icon-only"></ion-icon>
-            Eliminar
-          </ion-item-option>
-        </ion-item-options>
-      </ion-item-sliding>
-    </ion-list>
+            <ion-label>
+              <h2>{{ producto.nombre }}</h2>
+              <p><strong>Precio:</strong> {{ producto.precio | currency:'COP':'symbol':'1.0-0' }}</p>
+              <p><strong>Descripción:</strong> {{ producto.descripcion }}</p>
+              <p><strong>Creado:</strong> {{ formatearFecha(producto.fechaCreacion) }}</p>
+              <p><strong>ID:</strong> {{ producto.id }}</p>
+            </ion-label>
+
+            <ion-buttons slot="end">
+              <ion-button [routerLink]="['/productos/editar', producto.id]" color="primary" size="small">
+                <ion-icon name="pencil" slot="icon-only"></ion-icon>
+              </ion-button>
+              <ion-button (click)="eliminarProducto(producto.id!)" color="danger" size="small">
+                <ion-icon name="trash" slot="icon-only"></ion-icon>
+              </ion-button>
+            </ion-buttons>
+          </ion-item>
+
+          <ion-item-options side="end">
+            <ion-item-option color="primary" [routerLink]="['/productos/editar', producto.id]">
+              <ion-icon name="pencil" slot="start"></ion-icon>
+              Editar
+            </ion-item-option>
+            <ion-item-option color="danger" (click)="eliminarProducto(producto.id!)">
+              <ion-icon name="trash" slot="start"></ion-icon>
+              Eliminar
+            </ion-item-option>
+          </ion-item-options>
+
+        </ion-item-sliding>
+      </ion-list>
+
+      <!-- Estadísticas -->
+      <ion-card *ngIf="productos.length > 0">
+        <ion-card-header>
+          <ion-card-title>Resumen</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <p><strong>Total de productos:</strong> {{ productos.length }}</p>
+          <p><strong>Precio promedio:</strong> {{ calcularPrecioPromedio() | currency:'COP':'symbol':'1.0-0'  }}</p>
+          <p><strong>Producto más caro:</strong> {{ obtenerProductoMasCaro()?.nombre || 'N/A' }}</p>
+        </ion-card-content>
+      </ion-card>
+    </div>
 
     <!-- Mensaje cuando no hay productos -->
     <div *ngIf="!cargando && productos.length === 0" class="empty-state">
@@ -63,16 +87,6 @@
         Crear primer producto
       </ion-button>
     </div>
-
-    <!-- Estadísticas -->
-    <ion-card *ngIf="!cargando && productos.length > 0">
-      <ion-card-header>
-        <ion-card-title>Estadísticas</ion-card-title>
-      </ion-card-header>
-      <ion-card-content>
-        <p>Total de productos: {{ productos.length }}</p>
-      </ion-card-content>
-    </ion-card>
 
   </div>
 </ion-content>

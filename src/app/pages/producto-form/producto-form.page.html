@@ -6,18 +6,56 @@
       </ion-button>
     </ion-buttons>
     <ion-title>{{ isEdit ? 'Editar' : 'Nuevo' }} Producto</ion-title>
-    <ion-buttons slot="end">
-      <ion-button (click)="limpiarFormulario()" *ngIf="!isEdit">
-        <ion-icon name="refresh" slot="icon-only"></ion-icon>
-      </ion-button>
-    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true" class="ion-padding">
   <form (ngSubmit)="guardarProducto()">
     
-    <!-- Campo Nombre -->
+    <!-- Sección de Imagen -->
+    <div class="imagen-section">
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title>Imagen del Producto</ion-card-title>
+        </ion-card-header>
+        <ion-card-content class="imagen-content">
+          
+          <!-- Vista previa -->
+          <div class="imagen-preview" *ngIf="imagenPrevia">
+            <img [src]="imagenPrevia" alt="Vista previa">
+            <ion-button fill="clear" color="danger" (click)="eliminarImagen()">
+              <ion-icon name="trash" slot="icon-only"></ion-icon>
+            </ion-button>
+          </div>
+
+          <!-- Placeholder cuando no hay imagen -->
+          <div class="imagen-upload" *ngIf="!imagenPrevia">
+            <ion-icon name="image-outline" size="large"></ion-icon>
+            <p>Selecciona una imagen</p>
+          </div>
+
+          <!-- Input file oculto con referencia #imagenInput -->
+          <input 
+            type="file" 
+            #imagenInput
+            (change)="onImagenSeleccionada($event)" 
+            accept="image/*" 
+            hidden>
+          
+          <!-- Botón que activa el input file -->
+          <ion-button 
+            expand="block" 
+            fill="outline" 
+            (click)="imagenInput.click()">
+            <ion-icon name="cloud-upload" slot="start"></ion-icon>
+            {{ imagenPrevia ? 'Cambiar Imagen' : 'Seleccionar Imagen' }}
+          </ion-button>
+
+        </ion-card-content>
+      </ion-card>
+    </div>
+
+    <!-- Campos del formulario -->
     <ion-item>
       <ion-label position="stacked">Nombre del Producto *</ion-label>
       <ion-input 
@@ -29,7 +67,6 @@
       </ion-input>
     </ion-item>
 
-    <!-- Campo Precio -->
     <ion-item>
       <ion-label position="stacked">Precio *</ion-label>
       <ion-input 
@@ -43,7 +80,6 @@
       </ion-input>
     </ion-item>
 
-    <!-- Campo Descripción -->
     <ion-item>
       <ion-label position="stacked">Descripción</ion-label>
       <ion-textarea 
@@ -76,16 +112,4 @@
     </div>
 
   </form>
-
-  <!-- Vista Previa -->
-  <ion-card *ngIf="producto.nombre || producto.descripcion" color="light">
-    <ion-card-header>
-      <ion-card-title>Vista Previa</ion-card-title>
-    </ion-card-header>
-    <ion-card-content>
-      <p><strong>Nombre:</strong> {{ producto.nombre || 'No definido' }}</p>
-      <p><strong>Precio:</strong> {{ producto.precio | currency }}</p>
-      <p><strong>Descripción:</strong> {{ producto.descripcion || 'No definida' }}</p>
-    </ion-card-content>
-  </ion-card>
 </ion-content>

@@ -17,9 +17,11 @@ export class ProductoFormPage implements OnInit {
   producto: Producto = {
     nombre: '',
     precio: 0,
-    descripcion: ''
+    descripcion: '',
+    imagen: ''
   };
 
+  imagenPrevia: string | ArrayBuffer | null = null;
   isEdit = false;
   productoId?: number;
 
@@ -37,11 +39,44 @@ export class ProductoFormPage implements OnInit {
       const productoExistente = this.productosService.obtenerProductoPorId(this.productoId);
       if (productoExistente) {
         this.producto = { ...productoExistente };
+        this.imagenPrevia = this.producto.imagen || null;
       }
     }
   }
 
-  guardarProducto() {
+  onImagenSeleccionada(event: any) {
+    const archivo = event.target.files[0];
+    if (archivo) {
+      // Validar tipo de archivo
+      if (!archivo.type.startsWith('image/')) {
+        alert('Por favor selecciona una imagen válida');
+        return;
+      }
+
+      // Validar tamaño (max 2MB)
+      if (archivo.size > 2 * 1024 * 1024) {
+        alert('La imagen no debe superar los 2MB');
+        return;
+      }
+
+      this.producto.imagenFile = archivo;
+
+      // Crear vista previa
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        this.imagenPrevia = e.target?.result || null;
+      };
+      reader.readAsDataURL(archivo);
+    }
+  }
+
+  eliminarImagen() {
+    this.producto.imagen = '';
+    this.producto.imagenFile = undefined;
+    this.imagenPrevia = null;
+  }
+
+  async guardarProducto() {
     if (!this.producto.nombre || this.producto.nombre.trim() === '') {
       alert('El nombre del producto es requerido');
       return;
@@ -52,15 +87,20 @@ export class ProductoFormPage implements OnInit {
       return;
     }
 
-    if (this.isEdit && this.productoId) {
-      this.productosService.actualizarProducto(this.productoId, this.producto);
-      alert('Producto actualizado correctamente');
-    } else {
-      this.productosService.agregarProducto(this.producto);
-      alert('Producto creado correctamente');
+    try {
+      if (this.isEdit && this.productoId) {
+        await this.productosService.actualizarProducto(this.productoId, this.producto);
+        alert('Producto actualizado correctamente');
+      } else {
+        await this.productosService.agregarProducto(this.producto);
+        alert('Producto creado correctamente');
+      }
+      
+      this.router.navigate(['/productos']);
+    } catch (error) {
+      alert('Error al guardar el producto');
+      console.error(error);
     }
-    
-    this.router.navigate(['/productos']);
   }
 
   cancelar() {
@@ -71,7 +111,9 @@ export class ProductoFormPage implements OnInit {
     this.producto = {
       nombre: '',
       precio: 0,
-      descripcion: ''
+      descripcion: '',
+      imagen: ''
     };
+    this.imagenPrevia = null;
   }
 }
