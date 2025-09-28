@@ -21,6 +21,7 @@ import { AdminFooterComponent } from '../../admin-footer/admin-footer.component'
   ]
 })
 export class ProductosPage implements OnInit {
+  
   productos: Producto[] = [];
   cargando: boolean = true;
 

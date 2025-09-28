@@ -20,10 +20,15 @@ export class CarritoService {
   }
 
   // Cargar carrito desde localStorage
-  private cargarCarritoDesdeLocalStorage() {
-    const carritoGuardado = localStorage.getItem('carrito_data');
-    if (carritoGuardado) {
-      this.items = JSON.parse(carritoGuardado);
+ private cargarCarritoDesdeLocalStorage() {
+    try {
+      const carritoGuardado = localStorage.getItem('carrito_data');
+      if (carritoGuardado) {
+        this.items = JSON.parse(carritoGuardado);
+      }
+    } catch (error) {
+      console.error('Error al cargar carrito:', error);
+      this.items = [];
     }
   }
 
