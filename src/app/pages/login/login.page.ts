@@ -149,7 +149,7 @@ export class LoginPage implements OnInit {
   async loginRapido(tipo: 'admin' | 'usuario') {
     if (tipo === 'admin') {
       this.credenciales.email = 'admin@tienda.com';
-      this.credenciales.password = 'admin123';
+      this.credenciales.password = 'Admin123';
     } else {
       this.credenciales.email = 'usuario@tienda.com';
       this.credenciales.password = 'usuario123';
